@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { MdCheckCircle, MdRadioButtonUnchecked, MdDelete, MdEdit } from 'react-icons/md';
 import { useStore } from '../store/useStore';
+import { WEEKDAYS } from '../utils/constants';
 
 interface HabitRowProps {
     habitId: number;
@@ -12,6 +13,9 @@ const HabitRow = ({ habitId, habitName }: HabitRowProps) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editName, setEditName] = useState(habitName);
     const inputRef = useRef<HTMLInputElement>(null);
+
+    // @TODO extract device type into useDevice hook
+    const isMobile = window.innerWidth < 768;
 
     useEffect(() => {
         if (isEditing && inputRef.current) {
@@ -39,8 +43,8 @@ const HabitRow = ({ habitId, habitName }: HabitRowProps) => {
     );
 
     return (
-        <tr>
-            <td className="habit-name-cell">
+        <div className="grid-row">
+            <div className="habit-name-cell">
                 {isEditing ? (
                     <div className="edit-container">
                         <input
@@ -70,32 +74,35 @@ const HabitRow = ({ habitId, habitName }: HabitRowProps) => {
                         </div>
                     </div>
                 )}
-            </td>
-            {days.map((day) => {
-                const dateStr = day.toString();
-                const isCompleted = completions.some(
-                    (c) => c.habitId === habitId && c.date === dateStr
-                );
+            </div>
+            {isMobile && <div className="days-strip">{WEEKDAYS.map((day) => <div className="day-cell">{day}</div>)}</div>}
+            <div className="days-strip">
+                {days.map((day) => {
+                    const dateStr = day.toString();
+                    const isCompleted = completions.some(
+                        (c) => c.habitId === habitId && c.date === dateStr
+                    );
 
-                return (
-                    <td
-                        key={dateStr}
-                        className="day-cell"
-                        onClick={() => toggleCompletion(habitId, dateStr)}
-                    >
-                        {isCompleted ? (
-                            <div className="check-icon">
-                                <MdCheckCircle />
-                            </div>
-                        ) : (
-                            <div className="uncheck-icon" style={{ opacity: 0.2, display: 'flex', justifyContent: 'center' }}>
-                                <MdRadioButtonUnchecked />
-                            </div>
-                        )}
-                    </td>
-                );
-            })}
-        </tr>
+                    return (
+                        <div
+                            key={dateStr}
+                            className="day-cell"
+                            onClick={() => toggleCompletion(habitId, dateStr)}
+                        >
+                            {isCompleted ? (
+                                <div className="check-icon">
+                                    <MdCheckCircle />
+                                </div>
+                            ) : (
+                                <div className="uncheck-icon">
+                                    <MdRadioButtonUnchecked />
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
     );
 };
 

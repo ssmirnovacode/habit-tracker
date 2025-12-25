@@ -2,6 +2,7 @@
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { useStore } from '../store/useStore';
 import HabitRow from './HabitRow';
+import { WEEKDAYS } from '../utils/constants';
 
 const HabitTable = () => {
     const { habits, currentWeekStart, setCurrentWeek, isLoading } = useStore();
@@ -10,7 +11,7 @@ const HabitTable = () => {
         currentWeekStart.add({ days: i })
     );
 
-    const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
 
     if (isLoading) {
         return <div className="empty-state">Loading your habits...</div>;
@@ -25,7 +26,7 @@ const HabitTable = () => {
                 >
                     <MdChevronLeft />
                 </button>
-                <div style={{ fontSize: '1.1rem', fontWeight: 600 }}>
+                <div className="week-label">
                     Week of {currentWeekStart.month}/{currentWeekStart.day}
                 </div>
                 <button
@@ -41,21 +42,17 @@ const HabitTable = () => {
                     No habits yet. Start by adding one below!
                 </div>
             ) : (
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Habit</th>
-                            {dayNames.map((name, i) => (
-                                <th key={name}>
-                                    <div>{name}</div>
-                                    <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-                                        {days[i].day}
-                                    </div>
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
+                <div className="grid-container">
+                    <div className="grid-header">
+                        <div className="header-cell">Habit</div>
+                        {WEEKDAYS.map((name, i) => (
+                            <div key={name} className="header-cell day-header">
+                                <div className="day-name">{name}</div>
+                                <div className="day-number">{days[i].day}</div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="grid-body">
                         {habits.map((habit) => (
                             <HabitRow
                                 key={habit.id}
@@ -63,8 +60,8 @@ const HabitTable = () => {
                                 habitName={habit.name}
                             />
                         ))}
-                    </tbody>
-                </table>
+                    </div>
+                </div>
             )}
         </div>
     );

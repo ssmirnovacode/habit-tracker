@@ -23,73 +23,183 @@ h1 {
 }
 
 .habit-table-container {
-    overflow-x: auto;
-    border-radius: 16px;
+    width: 100%;
     margin-bottom: 2rem;
 }
 
-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 8px;
+.week-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding: 0 0.5rem;
 }
 
-th {
-    text-align: center;
-    padding: 1rem;
+.week-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-main);
+    letter-spacing: 0.02em;
+}
+
+.nav-btn {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
     color: var(--text-muted);
-    font-weight: 400;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-tr {
-    background: rgba(255, 255, 255, 0.02);
+.nav-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-main);
+}
+
+/* Unified Grid System */
+.grid-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.grid-header {
+    display: grid;
+    grid-template-columns: 240px repeat(7, 1fr);
+    gap: 12px;
+    padding: 0 1.25rem;
+    margin-bottom: 4px;
+}
+
+@media (max-width: 900px) {
+    .grid-header {
+        grid-template-columns: 160px repeat(7, 1fr);
+    }
+}
+
+.header-cell {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+    text-align: center;
+}
+
+.header-cell:first-child {
+    text-align: left;
+}
+
+.day-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.day-number {
+    font-size: 0.85rem;
+    color: var(--text-main);
+}
+
+.grid-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.grid-row {
+    display: grid;
+    grid-template-columns: 240px repeat(7, 1fr);
+    gap: 12px;
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 0.75rem 1.25rem;
+    align-items: center;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-tr:hover {
-    background: rgba(255, 255, 255, 0.05);
+@media (max-width: 900px) {
+    .grid-row {
+        grid-template-columns: 160px repeat(7, 1fr);
+    }
+}
+
+.grid-row:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
 }
 
-td {
-    padding: 1rem;
-    border-top: 1px solid var(--glass-border);
-    border-bottom: 1px solid var(--glass-border);
-}
-
-td:first-child {
-    border-left: 1px solid var(--glass-border);
-    border-radius: 12px 0 0 12px;
+.habit-name-cell {
+    min-width: 0;
     font-weight: 600;
-    min-width: 150px;
 }
 
-td:last-child {
-    border-right: 1px solid var(--glass-border);
-    border-radius: 0 12px 12px 0;
+.days-strip {
+    display: contents;
+    /* Keeps cells in the parent grid */
 }
 
 .day-cell {
-    text-align: center;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
     cursor: pointer;
     transition: all 0.2s ease;
-    width: 60px;
+    background: rgba(255, 255, 255, 0.03);
+    position: relative;
 }
 
 .day-cell:hover {
-    background: rgba(99, 102, 241, 0.1);
+    background: rgba(99, 102, 241, 0.15);
 }
 
 .check-icon {
     color: var(--accent);
-    font-size: 1.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    animation: scale-in 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    font-size: 1.6rem;
+    filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.4));
+}
+
+.uncheck-icon {
+    opacity: 0.15;
+    color: var(--text-main);
+    font-size: 1.2rem;
+}
+
+/* Mobile Layout - Card Style */
+@media (max-width: 768px) {
+    .grid-header {
+        display: none;
+    }
+
+    .grid-row {
+        grid-template-columns: 1fr;
+        padding: 1.5rem;
+        gap: 1.5rem;
+    }
+
+    .days-strip {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 10px;
+    }
+
+    .day-cell {
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    .habit-name-display {
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--glass-border);
+    }
 }
 
 @keyframes scale-in {
@@ -107,8 +217,9 @@ td:last-child {
 .add-habit-container {
     display: flex;
     gap: 1rem;
-    margin-top: 2rem;
+    margin-top: 2.5rem;
     justify-content: center;
+    width: 100%;
 }
 
 input {
@@ -124,75 +235,55 @@ input {
     transition: all 0.3s ease;
 }
 
-.habit-name-cell {
-    position: relative;
-}
-
 .habit-name-display {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 0.5rem;
-    width: 100%;
+    gap: 0.75rem;
 }
 
 .habit-text {
     cursor: pointer;
     flex: 1;
-    padding: 0.25rem 0;
-}
-
-.habit-text:hover {
-    text-decoration: underline;
-    text-underline-offset: 4px;
-    text-decoration-color: var(--primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 1.05rem;
 }
 
 .habit-actions {
     display: flex;
-    gap: 0.25rem;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-}
-
-tr:hover .habit-actions {
-    opacity: 1;
+    gap: 0.4rem;
 }
 
 .action-btn {
     background: transparent;
     padding: 0.4rem;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 1.1rem;
     display: flex;
-    align-items: center;
-    justify-content: center;
     color: var(--text-muted);
+    transition: all 0.2s ease;
 }
 
 .action-btn:hover {
     background: rgba(255, 255, 255, 0.1);
-    transform: none;
-}
-
-.action-btn.edit:hover {
-    color: var(--primary);
+    color: var(--text-main);
 }
 
 .action-btn.delete:hover {
     color: var(--danger);
 }
 
-.edit-container {
-    width: 100%;
-}
-
 .edit-input {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.08);
     border: 1px solid var(--primary);
-    padding: 0.4rem 0.6rem;
+    border-radius: 10px;
+    padding: 0.6rem 0.8rem;
     width: 100%;
-    max-width: none;
+    color: white;
+    font-family: inherit;
+    font-size: 1rem;
 }
 
 input:focus {
@@ -217,29 +308,26 @@ button:hover {
     transform: translateY(-1px);
 }
 
-.week-navigation {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 2rem;
-}
+@media (max-width: 600px) {
+    .add-habit-container {
+        flex-direction: column;
+        align-items: center;
+    }
 
-.nav-btn {
-    background: transparent;
-    padding: 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.25rem;
-    border: 1px solid var(--glass-border);
-}
+    .add-habit-container input {
+        max-width: none;
+    }
 
-.nav-btn:hover {
-    background: rgba(255, 255, 255, 0.05);
+    .add-habit-container button {
+        width: 100%;
+    }
 }
 
 .empty-state {
     text-align: center;
-    padding: 3rem;
+    padding: 4rem 2rem;
     color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 20px;
+    border: 1px dashed var(--glass-border);
 }
