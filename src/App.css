@@ -124,6 +124,77 @@ input {
     transition: all 0.3s ease;
 }
 
+.habit-name-cell {
+    position: relative;
+}
+
+.habit-name-display {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.habit-text {
+    cursor: pointer;
+    flex: 1;
+    padding: 0.25rem 0;
+}
+
+.habit-text:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-color: var(--primary);
+}
+
+.habit-actions {
+    display: flex;
+    gap: 0.25rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+tr:hover .habit-actions {
+    opacity: 1;
+}
+
+.action-btn {
+    background: transparent;
+    padding: 0.4rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+}
+
+.action-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: none;
+}
+
+.action-btn.edit:hover {
+    color: var(--primary);
+}
+
+.action-btn.delete:hover {
+    color: var(--danger);
+}
+
+.edit-container {
+    width: 100%;
+}
+
+.edit-input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--primary);
+    padding: 0.4rem 0.6rem;
+    width: 100%;
+    max-width: none;
+}
+
 input:focus {
     outline: none;
     border-color: var(--primary);

@@ -12,6 +12,7 @@ type StoreState = {
 
     fetchData: () => Promise<void>;
     addHabit: (name: string) => Promise<void>;
+    updateHabit: (id: number, name: string) => Promise<void>;
     deleteHabit: (id: number) => Promise<void>;
     toggleCompletion: (habitId: number, date: string) => Promise<void>;
     setCurrentWeek: (date: Temporal.PlainDate) => void;
@@ -24,7 +25,11 @@ export const useStore = create<StoreState>((set, get) => ({
     isLoading: true,
 
     fetchData: async () => {
-        set({ isLoading: true });
+        // Only show loading state if we have no habits yet (initial load)
+        if (get().habits.length === 0) {
+            set({ isLoading: true });
+        }
+
         try {
             const [habits, completions] = await Promise.all([
                 db.getAllHabits(),
@@ -42,14 +47,39 @@ export const useStore = create<StoreState>((set, get) => ({
         await get().fetchData();
     },
 
+    updateHabit: async (id: number, name: string) => {
+        await db.updateHabit(id, name);
+        await get().fetchData();
+    },
+
     deleteHabit: async (id: number) => {
         await db.deleteHabit(id);
         await get().fetchData();
     },
 
     toggleCompletion: async (habitId: number, date: string) => {
-        await db.toggleCompletion(habitId, date);
-        await get().fetchData();
+        // Optimistic update
+        const currentCompletions = get().completions;
+        const exists = currentCompletions.find(c => c.habitId === habitId && c.date === date);
+
+        let newCompletions;
+        if (exists) {
+            newCompletions = currentCompletions.filter(c => c !== exists);
+        } else {
+            newCompletions = [...currentCompletions, { habitId, date }];
+        }
+
+        set({ completions: newCompletions as Completion[] });
+
+        try {
+            await db.toggleCompletion(habitId, date);
+            // Background sync to ensure DB consistency
+            await get().fetchData();
+        } catch (error) {
+            console.error('Failed to toggle completion:', error);
+            // Rollback on error
+            set({ completions: currentCompletions });
+        }
     },
 
     setCurrentWeek: (date: Temporal.PlainDate) => {

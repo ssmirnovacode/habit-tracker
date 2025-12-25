@@ -131,6 +131,28 @@ class Database {
             transaction.onerror = () => reject(transaction.error);
         });
     }
+
+    async updateHabit(id: number, name: string): Promise<void> {
+        const db = await this.open();
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction('habits', 'readwrite');
+            const store = transaction.objectStore('habits');
+            const getRequest = store.get(id);
+
+            getRequest.onsuccess = () => {
+                const habit = getRequest.result as Habit;
+                if (habit) {
+                    habit.name = name;
+                    const putRequest = store.put(habit);
+                    putRequest.onsuccess = () => resolve();
+                    putRequest.onerror = () => reject(putRequest.error);
+                } else {
+                    reject(new Error(`Habit with id ${id} not found`));
+                }
+            };
+            getRequest.onerror = () => reject(getRequest.error);
+        });
+    }
 }
 
 export const db = new Database();
